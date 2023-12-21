@@ -1,4 +1,5 @@
 # epsi-c1-2023
 
 ## Fonctionnalités
-- [] Afficher toute les catégories disponnibles 
+- [x] Afficher toute les catégories disponnibles 
+- [] Afficher une question a choix multiple

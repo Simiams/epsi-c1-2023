@@ -9,20 +9,34 @@
     <h1>Quizz</h1>
 
 
-    <template v-for="cat in categories">
+    <template v-for="cat in categories" :key="cat.id">
         <input
                 type="radio"
-                :id="cat.name"
-                :value="cat.name"
+                :id="cat.id"
+                :value="cat.id"
                 name="branch"
                 v-model="currentCategory"
+                @click="getQuestionByCategory(cat.id)"
         />
-        <label :for="cat.name">{{ cat.name }}</label>
+        <label :for="cat.id">{{ cat.name }}</label>
     </template>
 
+    <h2>{{ printCatName(currentCategory) }}</h2>
+
+    {{question}}
+
+    <form>
+        <p>{{ question.question }}</p>
+        {{ question.allResponses}}
+
+        <label v-for="r in question.allResponses" :key="r">
+            <input type="radio" name="reponse" :value="r"> {{ r }} <br>
+        </label>
+        <br>
+        <button type="submit">Valider</button>
+    </form>
 
 
-    <h2>{{ currentCategory }}</h2>
 </div>
 
 
@@ -31,6 +45,7 @@
 <script>
     const apiSeeCategories = "https://opentdb.com/api_category.php";
     const apiSeeCountQuestionByApi = "https://opentdb.com/api_count.php?category=";
+    const apiGetQuestionByCategory = "https://opentdb.com/api.php?amount=1&difficulty=medium&type=multiple&category=";
 
 
     Vue.createApp({
@@ -38,6 +53,8 @@
             return {
                 categories: [],
                 currentCategory: "",
+                question: {},
+                response: {},
             }
         },
         created: function () {
@@ -55,10 +72,21 @@
                     console.error(error);
                 }
             },
+            getQuestionByCategory: async function (id) {
+                try {
+                    const response = await axios.get(apiGetQuestionByCategory + id);
+                    this.question = response.data.results[0];
+                    this.question.allResponses = [...this.question.incorrect_answers, this.question.correct_answer].sort(() => Math.random() - 0.5)
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+            printCatName: function (id) {
+                return this.categories.find(item => item.id === id)?.name || null
+            },
         }
 
     }).mount('#quizz')
-
 </script>
 
 </body>
