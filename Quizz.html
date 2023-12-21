@@ -2,7 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Quizz</title>
+    <style>
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <div id="quizz">
@@ -23,20 +33,26 @@
 
     <h2>{{ printCatName(currentCategory) }}</h2>
 
-    {{question}}
 
-    <form>
-        <p>{{ question.question }}</p>
-        {{ question.allResponses}}
+    <p>{{ question.question }}</p>
 
-        <label v-for="r in question.allResponses" :key="r">
-            <input type="radio" name="reponse" :value="r"> {{ r }} <br>
-        </label>
+
+    <label v-for="r in question.allResponses" :key="r">
+        <input
+                type="radio"
+                name="reponse"
+                :value="r"
+                v-model="response"
+        >
+        <p v-bind:class="{
+            'incorrect': response !== '' && r === response && response !== question.correct_answer,
+            'correct': response !== '' && r === question.correct_answer
+        }">
+            {{ r }}
+        </p>
         <br>
-        <button type="submit">Valider</button>
-    </form>
-
-
+    </label>
+    <br>
 </div>
 
 
@@ -54,7 +70,7 @@
                 categories: [],
                 currentCategory: "",
                 question: {},
-                response: {},
+                response: "",
             }
         },
         created: function () {
