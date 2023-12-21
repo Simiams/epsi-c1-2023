@@ -2,4 +2,7 @@
 
 ## Fonctionnalités
 - [x] Afficher toute les catégories disponnibles 
-- [] Afficher une question a choix multiple
+- [x] Afficher une question a choix multiple
+- [x] L'utilisateur eux choisir une reponse, indique la bonne reponse au clique
+- [] Compteur de point
+- [] CSS

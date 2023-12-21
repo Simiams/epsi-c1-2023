@@ -33,9 +33,9 @@
 
     <h2>{{ printCatName(currentCategory) }}</h2>
 
+    {{ points }}
 
     <p>{{ question.question }}</p>
-
 
     <label v-for="r in question.allResponses" :key="r">
         <input
@@ -43,15 +43,20 @@
                 name="reponse"
                 :value="r"
                 v-model="response"
+                @click="question.allResponses.includes(response) && r === question.correct_answer ? points++ : points"
         >
         <p v-bind:class="{
-            'incorrect': response !== '' && r === response && response !== question.correct_answer,
-            'correct': response !== '' && r === question.correct_answer
+            'incorrect': question.allResponses.includes(response) && r === response && response !== question.correct_answer,
+            'correct': question.allResponses.includes(response) && r === question.correct_answer
         }">
             {{ r }}
         </p>
         <br>
     </label>
+
+
+    <button @click="getQuestionByCategory(currentCategory)">Next</button>
+
     <br>
 </div>
 
@@ -60,7 +65,6 @@
 <script src="https://unpkg.com/vue@3"></script>
 <script>
     const apiSeeCategories = "https://opentdb.com/api_category.php";
-    const apiSeeCountQuestionByApi = "https://opentdb.com/api_count.php?category=";
     const apiGetQuestionByCategory = "https://opentdb.com/api.php?amount=1&difficulty=medium&type=multiple&category=";
 
 
@@ -71,13 +75,11 @@
                 currentCategory: "",
                 question: {},
                 response: "",
+                points: 0,
             }
         },
         created: function () {
             this.getAllCategories();
-        },
-        watch: {
-            categories: "getAllCategories",
         },
         methods: {
             getAllCategories: async function () {
