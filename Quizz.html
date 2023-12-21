@@ -4,58 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Quizz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .correct {
-            color: green;
+            background-color: green;
+            color: white;
         }
 
         .incorrect {
-            color: red;
+            background-color: red;
+        }
+
+        .title {
+            text-align: center;
+            margin: 30px;
+        }
+
+        .inputs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .btn {
+            margin: 1%;
+            padding: 1%;
+            width: 250px;
+        }
+        .sub-title
+        {
+            text-align: center;
+            margin: 30px;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
-<div id="quizz">
-    <h1>Quizz</h1>
+<div id="quizz" class="container">
+    <h1 class="title">Quizz</h1>
 
+    <div class="inputs">
+        <template v-for="cat in categories" :key="cat.id">
+            <input
+                    class="btn-check"
+                    type="radio"
+                    :id="cat.id"
+                    :value="cat.id"
+                    name="branch"
+                    v-model="currentCategory"
+                    @click="getQuestionByCategory(cat.id)"
+            />
+            <label class="btn btn-outline-danger" :for="cat.id">{{ cat.name }}</label>
+        </template>
+    </div>
 
-    <template v-for="cat in categories" :key="cat.id">
-        <input
-                type="radio"
-                :id="cat.id"
-                :value="cat.id"
-                name="branch"
-                v-model="currentCategory"
-                @click="getQuestionByCategory(cat.id)"
-        />
-        <label :for="cat.id">{{ cat.name }}</label>
-    </template>
+    <h2 class="sub-title">{{ printCatName(currentCategory) }}</h2>
 
-    <h2>{{ printCatName(currentCategory) }}</h2>
-
-    {{ points }}
+    <p> Vos points: {{ points }}</p>
 
     <p>{{ question.question }}</p>
 
-    <label v-for="r in question.allResponses" :key="r">
+    <template v-for="r in question.allResponses" :key="r">
         <input
+                class="btn-check"
+                :id="r"
+                :disabled="question.allResponses.includes(response)"
                 type="radio"
                 name="reponse"
                 :value="r"
                 v-model="response"
-                @click="question.allResponses.includes(response) && r === question.correct_answer ? points++ : points"
+                @click="checkAnswer(r)"
         >
-        <p v-bind:class="{
-            'incorrect': question.allResponses.includes(response) && r === response && response !== question.correct_answer,
-            'correct': question.allResponses.includes(response) && r === question.correct_answer
-        }">
-            {{ r }}
-        </p>
-        <br>
-    </label>
+        <label
+                class="btn btn-outline-secondary"
+                :for="r"
+                v-bind:class="{
+                'btn btn-danger': question.allResponses.includes(response) && r === response && response !== question.correct_answer,
+                'btn btn-success': question.allResponses.includes(response) && r === question.correct_answer
+            }"
+        >{{ r }}</label>
+    </template>
 
+    <br>
 
-    <button @click="getQuestionByCategory(currentCategory)">Next</button>
+    <button class="btn btn-warning" @click="getQuestionByCategory(currentCategory)">Next</button>
 
     <br>
 </div>
@@ -63,6 +98,7 @@
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://unpkg.com/vue@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const apiSeeCategories = "https://opentdb.com/api_category.php";
     const apiGetQuestionByCategory = "https://opentdb.com/api.php?amount=1&difficulty=medium&type=multiple&category=";
@@ -102,6 +138,11 @@
             printCatName: function (id) {
                 return this.categories.find(item => item.id === id)?.name || null
             },
+            checkAnswer: function (response) {
+                if (response === this.question.correct_answer) {
+                    this.points += 1;
+                }
+            }
         }
 
     }).mount('#quizz')
