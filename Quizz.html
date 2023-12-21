@@ -8,11 +8,21 @@
 <div id="quizz">
     <h1>Quizz</h1>
 
-    <ul>
-        <li v-for="cat in categories">
-            {{ cat.name }}
-        </li>
-    </ul>
+
+    <template v-for="cat in categories">
+        <input
+                type="radio"
+                :id="cat.name"
+                :value="cat.name"
+                name="branch"
+                v-model="currentCategory"
+        />
+        <label :for="cat.name">{{ cat.name }}</label>
+    </template>
+
+
+
+    <h2>{{ currentCategory }}</h2>
 </div>
 
 
@@ -27,6 +37,7 @@
         data() {
             return {
                 categories: [],
+                currentCategory: "",
             }
         },
         created: function () {
