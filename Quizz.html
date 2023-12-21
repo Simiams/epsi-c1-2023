@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quizz</title>
+</head>
+<body>
+<div id="quizz">
+    <h1>Quizz</h1>
+
+    <ul>
+        <li v-for="cat in categories">
+            {{ cat.name }}
+        </li>
+    </ul>
+</div>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+    const apiSeeCategories = "https://opentdb.com/api_category.php";
+    const apiSeeCountQuestionByApi = "https://opentdb.com/api_count.php?category=";
+
+
+    Vue.createApp({
+        data() {
+            return {
+                categories: [],
+            }
+        },
+        created: function () {
+            this.getAllCategories();
+        },
+        watch: {
+            categories: "getAllCategories",
+        },
+        methods: {
+            getAllCategories: async function () {
+                try {
+                    const response = await axios.get(apiSeeCategories);
+                    this.categories = response.data.trivia_categories;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+        }
+
+    }).mount('#quizz')
+
+</script>
+
+</body>
+</html>
