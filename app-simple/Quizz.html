@@ -31,11 +31,12 @@
             padding: 1%;
             width: 250px;
         }
-        .sub-title
-        {
+
+        .sub-title {
             text-align: center;
             margin: 30px;
         }
+
         p {
             font-size: 1.2rem;
             margin: 10px;
@@ -103,7 +104,6 @@
     const apiSeeCategories = "https://opentdb.com/api_category.php";
     const apiGetQuestionByCategory = "https://opentdb.com/api.php?amount=1&difficulty=medium&type=multiple&category=";
 
-
     Vue.createApp({
         data() {
             return {
@@ -144,7 +144,6 @@
                 }
             }
         }
-
     }).mount('#quizz')
 </script>
 
